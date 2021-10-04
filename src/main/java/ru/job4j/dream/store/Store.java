@@ -55,6 +55,10 @@ public class Store {
         candidates.put(candidate.getId(), candidate);
     }
 
+    public void deleteCandidateById(int id) {
+        candidates.remove(id);
+    }
+
     public Post findPostById(int id) {
         return posts.get(id);
     }

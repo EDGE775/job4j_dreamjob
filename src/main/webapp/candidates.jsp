@@ -1,7 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="ru.job4j.dream.model.Candidate" %>
-<%@ page import="java.util.Collection" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -37,17 +35,31 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col">Имя кандидата</th>
+                        <th scope="col">Фото</th>
+                        <th scope="col">Действие</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:forEach items="${candidates}" var="can">
                         <tr>
-                            <td>
-                                <a href="<c:url value="post/edit.jsp?id=${can.id}"/>">
+                            <td class="align-middle">
+                                <a href="<c:url value="candidate/edit.jsp?id=${can.id}"/>">
                                     <i class="fa fa-edit mr-3"></i>
                                 </a>
                                 <c:out value="${can.name}"/>
+                            </td>
+                            <td>
+                                <img src="<c:url value='/photodownload?id=${can.id}'/>" width="100px" height="100px"/>
+                                <a href="<c:url value="/photoupload?id=${can.id}"/>"
+                                   class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Добавить
+                                    фото</a>
+                            </td>
+                            <td class="align-middle">
+                                <form action="<c:url value='/candidates.do?id=${can.id}&action=delete'/>" method="post">
+                                    <button type="submit" class="btn btn-primary btn-sm active">Удалить кандидата
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>
