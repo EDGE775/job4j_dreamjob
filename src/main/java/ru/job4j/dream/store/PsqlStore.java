@@ -66,7 +66,7 @@ public class PsqlStore implements Store {
     public Collection<Candidate> findAllCandidates() {
         List<Candidate> candidates = new ArrayList<>();
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("SELECT * FROM candidates")
+             PreparedStatement ps = cn.prepareStatement("SELECT * FROM candidate")
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {

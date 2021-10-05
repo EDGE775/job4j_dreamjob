@@ -4,7 +4,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import ru.job4j.dream.store.MemStore;
+import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -18,7 +18,7 @@ public class PhotoUploadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.valueOf(req.getParameter("id"));
-        req.setAttribute("candidate", MemStore.instOf().findCandidateById(id));
+        req.setAttribute("candidate", PsqlStore.instOf().findCandidateById(id));
         RequestDispatcher dispatcher = req.getRequestDispatcher("/photoupload.jsp");
         dispatcher.forward(req, resp);
     }
