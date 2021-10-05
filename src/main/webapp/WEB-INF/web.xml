@@ -37,6 +37,10 @@
         <servlet-name>PhotoDownloadServlet</servlet-name>
         <servlet-class>ru.job4j.dream.servlet.PhotoDownloadServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteCandidateServlet</servlet-name>
+        <servlet-class>ru.job4j.dream.servlet.DeleteCandidateServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>PostServlet</servlet-name>
         <url-pattern>/posts.do</url-pattern>
@@ -64,5 +68,9 @@
     <servlet-mapping>
         <servlet-name>PhotoDownloadServlet</servlet-name>
         <url-pattern>/photodownload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteCandidateServlet</servlet-name>
+        <url-pattern>/deletecandidate</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -11,13 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CandidateServlet extends HttpServlet {
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.valueOf(req.getParameter("id"));
-        Store.instOf().deleteCandidateById(id);
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/photoupload");
-        dispatcher.forward(req, resp);
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,17 +21,12 @@ public class CandidateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String action = req.getParameter("action");
-        if ("delete".equals(action)) {
-            doDelete(req, resp);
-        } else {
-            Store.instOf().saveCandidate(
-                    new Candidate(
-                            Integer.valueOf(req.getParameter("id")),
-                            req.getParameter("name")
-                    )
-            );
-            resp.sendRedirect(req.getContextPath() + "/candidates.do");
-        }
+        Store.instOf().saveCandidate(
+                new Candidate(
+                        Integer.valueOf(req.getParameter("id")),
+                        req.getParameter("name")
+                )
+        );
+        resp.sendRedirect(req.getContextPath() + "/candidates.do");
     }
 }

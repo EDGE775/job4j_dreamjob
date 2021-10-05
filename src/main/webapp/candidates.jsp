@@ -56,7 +56,7 @@
                                     фото</a>
                             </td>
                             <td class="align-middle">
-                                <form action="<c:url value='/candidates.do?id=${can.id}&action=delete'/>" method="post">
+                                <form action="<c:url value='/deletecandidate?id=${can.id}'/>" method="post">
                                     <button type="submit" class="btn btn-primary btn-sm active">Удалить кандидата
                                     </button>
                                 </form>
