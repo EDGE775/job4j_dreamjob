@@ -6,6 +6,7 @@ import ru.job4j.dream.model.User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,13 +14,17 @@ public class MemStore implements Store {
 
     private static final Store INST = new MemStore();
 
-    private static final AtomicInteger POST_ID = new AtomicInteger(4);
+    private static final AtomicInteger POST_ID = new AtomicInteger(1);
 
-    private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
+    private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(1);
+
+    private static final AtomicInteger USER_ID = new AtomicInteger(1);
 
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
 
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+
+    private final Map<Integer, User> users = new ConcurrentHashMap<>();
 
     private MemStore() {
 
@@ -72,16 +77,23 @@ public class MemStore implements Store {
 
     @Override
     public Collection<User> findAllUsers() {
-        return null;
+        return users.values();
     }
 
     @Override
     public void saveUser(User user) {
-
+        if (user.getId() == 0) {
+            user.setId(USER_ID.incrementAndGet());
+        }
+        users.put(user.getId(), user);
     }
 
     @Override
     public User findUserByEmail(String eMail) {
-        return null;
+        return users.values()
+                .stream()
+                .filter(x -> Objects.equals(x.getEmail(), eMail))
+                .findFirst()
+                .orElse(null);
     }
 }
