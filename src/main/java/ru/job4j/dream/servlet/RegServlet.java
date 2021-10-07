@@ -20,18 +20,13 @@ public class RegServlet extends HttpServlet {
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        if ("".equals(name) || "".equals(email) || "".equals(password)) {
-            req.setAttribute("error", "Строки не могут быть пустыми!");
+        Store store = PsqlStore.instOf();
+        if (store.findUserByEmail(email) != null) {
+            req.setAttribute("error", "Пользователь с такой почтой уже зарегистрирован!");
             req.getRequestDispatcher("reg.jsp").forward(req, resp);
         } else {
-            Store store = PsqlStore.instOf();
-            if (store.findUserByEmail(email) != null) {
-                req.setAttribute("error", "Пользователь с такой почтой уже зарегистрирован!");
-                req.getRequestDispatcher("reg.jsp").forward(req, resp);
-            }
             store.saveUser(new User(0, name, email, password));
             resp.sendRedirect(req.getContextPath() + "/auth.do");
         }
     }
 }
-

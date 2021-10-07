@@ -22,11 +22,6 @@ public class AuthServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        if ("".equals(email) || "".equals(password)) {
-            req.setAttribute("error", "Строки не могут быть пустыми!");
-            req.getRequestDispatcher("login.jsp").forward(req, resp);
-            return;
-        }
         Store store = PsqlStore.instOf();
         User user = store.findUserByEmail(email);
         if (user == null) {
