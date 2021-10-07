@@ -24,7 +24,6 @@ import static org.mockito.Mockito.mock;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PsqlStore.class)
 public class CandidateServletTest {
-    @Ignore
     @Test
     public void whenCreateCandidate() throws IOException, ServletException {
         Store store = MemStore.instOf();
@@ -39,7 +38,6 @@ public class CandidateServletTest {
         Assert.assertThat(result.getName(), Is.is("name"));
     }
 
-    @Ignore
     @Test
     public void whenUpdateCandidate() throws IOException, ServletException {
         Store store = MemStore.instOf();

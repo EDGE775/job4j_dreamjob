@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 @PrepareForTest(PsqlStore.class)
 public class PostServletTest {
 
-    @Ignore
     @Test
     public void whenCreatePost() throws IOException, ServletException {
         Store store = MemStore.instOf();
@@ -40,7 +39,6 @@ public class PostServletTest {
         Assert.assertThat(result.getName(), Is.is("name"));
     }
 
-    @Ignore
     @Test
     public void whenUpdatePost() throws IOException, ServletException {
         Store store = MemStore.instOf();
