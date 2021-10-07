@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
 
 import static org.mockito.Mockito.mock;
 
@@ -33,22 +34,23 @@ public class PostServletTest {
         PowerMockito.when(req.getParameter("id")).thenReturn("0");
         PowerMockito.when(req.getParameter("name")).thenReturn("name");
         new PostServlet().doPost(req, resp);
-        Post result = store.findAllPosts().iterator().next();
+        Post result = new LinkedList<>(store.findAllPosts()).getLast();
         Assert.assertThat(result.getName(), Is.is("name"));
     }
 
     @Test
     public void whenUpdatePost() throws IOException, ServletException {
         Store store = MemStore.instOf();
-        store.savePost(new Post(0, "old name"));
+        Post post = new Post(0, "old name");
+        store.savePost(post);
         PowerMockito.mockStatic(PsqlStore.class);
         PowerMockito.when(PsqlStore.instOf()).thenReturn(store);
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
-        PowerMockito.when(req.getParameter("id")).thenReturn("1");
+        PowerMockito.when(req.getParameter("id")).thenReturn(String.valueOf(post.getId()));
         PowerMockito.when(req.getParameter("name")).thenReturn("new name");
         new PostServlet().doPost(req, resp);
-        Post result = store.findAllPosts().iterator().next();
+        Post result = store.findPostById(post.getId());
         Assert.assertThat(result.getName(), Is.is("new name"));
     }
 }
