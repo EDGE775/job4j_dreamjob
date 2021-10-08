@@ -9,10 +9,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
         function validate() {
-            var valueName = $('#name').val();
-            var valueSurname = $('#surname').val();
-            var valueDesc = $('#desc').val();
-            var valueSex = $('#sex').val();
+            let valueName = $('#name').val();
+            let valueSurname = $('#surname').val();
+            let valueDesc = $('#desc').val();
+            let valueSex = $('#sex').val();
             if (valueName == '') {
                 alert($('#name').attr('title'));
                 return false;
@@ -33,11 +33,13 @@
     </script>
     <script>
         function addRow() {
+            let table = document.getElementById('table');
+            let number = + table.rows[table.rows.length - 1].cells[0].innerHTML + 1;
             const valueName = $('#name').val();
             const valueSurname = $('#surname').val();
             const valueSex = $('#sex').val();
             $('#table tr:last').after(
-                '<tr><td>' + '№' + '</td>' +
+                '<tr><th>' + number + '</th>' +
                 '<td>' + valueName + '</td>' +
                 '<td>' + valueSurname + '</td>' +
                 '<td>' + valueSex + '</td>' +
