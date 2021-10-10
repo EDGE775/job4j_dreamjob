@@ -4,6 +4,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
@@ -71,11 +72,27 @@ public class PsqlStore implements Store {
     public Collection<Candidate> findAllCandidates() {
         List<Candidate> candidates = new ArrayList<>();
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("SELECT * FROM candidate")
+             PreparedStatement ps = cn.prepareStatement(
+                     "select "
+                             + "c.id as id, "
+                             + "c.name as name, "
+                             + "c.created as created, "
+                             + "c.city_id as city_id, "
+                             + "city.name as city_name "
+                             + "from candidate as c "
+                             + "left join city "
+                             + "on c.city_id = city.id;")
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    candidates.add(
+                            new Candidate(
+                                    it.getInt("id"),
+                                    it.getString("name"),
+                                    new City(
+                                            it.getInt("city_id"),
+                                            it.getString("city_name")),
+                                    it.getTimestamp("created").toLocalDateTime()));
                 }
             }
         } catch (Exception e) {
@@ -83,6 +100,41 @@ public class PsqlStore implements Store {
         }
         return candidates;
     }
+
+    @Override
+    public Collection<Candidate> findCandidatesPerDay() {
+        List<Candidate> candidates = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "select "
+                             + "c.id as id, "
+                             + "c.name as name, "
+                             + "c.created as created, "
+                             + "c.city_id as city_id, "
+                             + "city.name as city_name "
+                             + "from candidate as c "
+                             + "left join city "
+                             + "on c.city_id = city.id "
+                             + "where c.created > (now() - interval '1 DAY');")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    candidates.add(
+                            new Candidate(
+                                    it.getInt("id"),
+                                    it.getString("name"),
+                                    new City(
+                                            it.getInt("city_id"),
+                                            it.getString("city_name")),
+                                    it.getTimestamp("created").toLocalDateTime()));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка при получении списка кандидатов, добавленных за последние сутки из БД", e);
+        }
+        return candidates;
+    }
+
 
     @Override
     public void savePost(Post post) {
@@ -148,14 +200,27 @@ public class PsqlStore implements Store {
     public Candidate findCandidateById(int id) {
         Candidate candidate = null;
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("select * from candidate where id = ?")) {
+             PreparedStatement ps = cn.prepareStatement(
+                     "select "
+                             + "c.id as id, "
+                             + "c.name as name, "
+                             + "c.created as created, "
+                             + "c.city_id as city_id, "
+                             + "city.name as city_name "
+                             + "from candidate as c "
+                             + "left join city "
+                             + "on c.city_id = city.id "
+                             + "where c.id = ?;")) {
             ps.setInt(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
                     candidate = new Candidate(
                             resultSet.getInt("id"),
-                            resultSet.getString("name")
-                    );
+                            resultSet.getString("name"),
+                            new City(
+                                    resultSet.getInt("city_id"),
+                                    resultSet.getString("city_name")),
+                            resultSet.getTimestamp("created").toLocalDateTime());
                 }
             }
         } catch (Exception e) {
@@ -176,10 +241,13 @@ public class PsqlStore implements Store {
     private Candidate createCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =
-                     cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)",
+                     cn.prepareStatement(
+                             "INSERT INTO candidate(name, created, city_id) VALUES (?, ?, ?)",
                              PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, candidate.getName());
+            ps.setTimestamp(2, Timestamp.valueOf(candidate.getCreated()));
+            ps.setInt(3, candidate.getCity().getId());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -195,9 +263,11 @@ public class PsqlStore implements Store {
     private void updateCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =
-                     cn.prepareStatement("update candidate set name = ? where id = ?")) {
+                     cn.prepareStatement(
+                             "update candidate set name = ?, city_id = ? where id = ?")) {
             ps.setString(1, candidate.getName());
-            ps.setInt(2, candidate.getId());
+            ps.setInt(2, candidate.getCity().getId());
+            ps.setInt(3, candidate.getId());
             ps.execute();
         } catch (Exception e) {
             LOG.error("Ошибка при обновлении кандидата", e);
@@ -301,5 +371,41 @@ public class PsqlStore implements Store {
             LOG.error("Ошибка при получении юзера по email", e);
         }
         return user;
+    }
+
+    @Override
+    public Collection<City> findAllCities() {
+        List<City> cities = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("SELECT * FROM city")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    cities.add(new City(it.getInt("id"), it.getString("name")));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка при получении списка городов из БД", e);
+        }
+        return cities;
+    }
+
+    @Override
+    public City findCityByName(String name) {
+        City city = null;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("select * from city where name = ?")) {
+            ps.setString(1, name);
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.next()) {
+                    city = new City(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка при получении юзера по email", e);
+        }
+        return city;
     }
 }

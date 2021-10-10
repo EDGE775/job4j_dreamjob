@@ -37,6 +37,7 @@
                     <tr>
                         <th scope="col">Имя кандидата</th>
                         <th scope="col">Фото</th>
+                        <th scope="col">Город</th>
                         <th scope="col">Действие</th>
                     </tr>
                     </thead>
@@ -54,6 +55,9 @@
                                 <a href="<c:url value="/photoupload?id=${can.id}"/>"
                                    class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Добавить
                                     фото</a>
+                            </td>
+                            <td class="align-middle">
+                                <c:out value="${can.city.name}"/>
                             </td>
                             <td class="align-middle">
                                 <form action="<c:url value='/deletecandidate?id=${can.id}'/>" method="post">

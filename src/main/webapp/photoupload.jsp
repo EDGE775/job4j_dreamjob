@@ -23,7 +23,7 @@
         <tr valign="top">
             <td>
                 <img src="<c:url value='/photodownload?id=${candidate.id}'/>" width="100px" height="100px"/>
-                <a href="<c:url value='/photodownload?id=${candidate.id}'/>">Загрузить</a>
+                <a href="<c:url value='/photodownload?id=${candidate.id}'/>">Скачать фото</a>
             </td>
         </tr>
         </tbody>
@@ -33,7 +33,7 @@
         <div class="checkbox">
             <input type="file" name="file">
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default">Сохранить</button>
     </form>
 </div>
 

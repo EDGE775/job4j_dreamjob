@@ -19,6 +19,20 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <script>
+        function validate() {
+            let valueEmail = $('#email').val();
+            let valuePass = $('#password').val();
+            if (valueEmail == '') {
+                alert($('#email').attr('title'));
+                return false;
+            }
+            if (valuePass == '') {
+                alert($('#password').attr('title'));
+                return false;
+            }
+        }
+    </script>
 
     <title>Работа мечты</title>
 </head>
@@ -33,13 +47,13 @@
                 <form action="<%=request.getContextPath()%>/auth.do" method="post">
                     <div class="form-group">
                         <label>Почта</label>
-                        <input type="text" class="form-control" name="email" required>
+                        <input type="text" class="form-control" name="email" id="email" title="Введите почту!">
                     </div>
                     <div class="form-group">
                         <label>Пароль</label>
-                        <input type="text" class="form-control" name="password" required>
+                        <input type="password" class="form-control" name="password" id="password" title="Введите пароль!">
                     </div>
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary" onclick="return validate();">Войти</button>
                     <c:if test="${not empty error}">
                         <div style="color:#ff0000; font-weight: bold; margin: 30px 0;">
                             <c:out value="${error}"/>

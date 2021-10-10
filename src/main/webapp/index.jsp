@@ -19,6 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <title>Работа мечты</title>
 </head>
@@ -40,6 +41,31 @@
                 Сегодняшние кандидаты.
             </div>
             <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Имя кандидата</th>
+                        <th scope="col">Фото</th>
+                        <th scope="col">Город</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${candidates}" var="can">
+                        <tr>
+                            <td class="align-middle">
+                                <c:out value="${can.name}"/>
+                            </td>
+                            <td>
+                                <img src="<c:url value='/photodownload?id=${can.id}'/>" width="100px" height="100px"/>
+                            </td>
+                            <td class="align-middle">
+                                <c:out value="${can.city.name}"/>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>
