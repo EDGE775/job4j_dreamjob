@@ -42,7 +42,6 @@
     function sendGreeting() {
         $.ajax({
             type: 'POST',
-            crossdomain: true,
             url: 'http://localhost:8080/dreamjob/greet',
             data: JSON.stringify({
                 name: $('#email').val()
@@ -53,11 +52,6 @@
         }).fail(function (err) {
             console.log(err);
         });
-    }
-
-    function addLine() {
-        const line = $('#email').val();
-        $('#header').after('<p>' + line + '</p>');
     }
 </script>
 <body>

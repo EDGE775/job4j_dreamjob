@@ -23,7 +23,6 @@ public class GreetingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json; charset=utf-8");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
         OutputStream output = resp.getOutputStream();
         String json = GSON.toJson(emails);
         output.write(json.getBytes(StandardCharsets.UTF_8));
@@ -36,7 +35,6 @@ public class GreetingServlet extends HttpServlet {
         Email email = GSON.fromJson(req.getReader(), Email.class);
         emails.add(email);
         resp.setContentType("application/json; charset=utf-8");
-        resp.setHeader("Access-Control-Allow-Origin", "*");
         OutputStream output = resp.getOutputStream();
         String json = GSON.toJson(email);
         output.write(json.getBytes(StandardCharsets.UTF_8));
