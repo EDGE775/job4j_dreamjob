@@ -5,11 +5,13 @@ import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class MemStore implements Store {
 
@@ -26,6 +28,8 @@ public class MemStore implements Store {
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
+
+    private final Map<Integer, City> cities = new ConcurrentHashMap<>();
 
     private MemStore() {
 
@@ -47,7 +51,9 @@ public class MemStore implements Store {
 
     @Override
     public Collection<Candidate> findCandidatesPerDay() {
-        return null;
+         return candidates.values().stream()
+                .filter(can -> can.getCreated().isAfter(LocalDateTime.now().minusDays(1)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -105,11 +111,15 @@ public class MemStore implements Store {
 
     @Override
     public Collection<City> findAllCities() {
-        return null;
+        return cities.values();
     }
 
     @Override
     public City findCityByName(String name) {
-        return null;
+        return cities.values()
+                .stream()
+                .filter(city -> city.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 }
