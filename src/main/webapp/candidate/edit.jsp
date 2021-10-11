@@ -41,7 +41,6 @@
         $(document).ready(function () {
             $.ajax({
                 type: 'GET',
-                crossdomain: true,
                 url: 'http://localhost:8080/dreamjob/city',
                 dataType: 'json'
             }).done(function (data) {

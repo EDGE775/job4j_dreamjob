@@ -15,7 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CityServlet extends HttpServlet {
 
-    private final List<City> cities = new CopyOnWriteArrayList<>(PsqlStore.instOf().findAllCities());
+    private final List<City> cities = new CopyOnWriteArrayList<>(PsqlStore.instOf()
+            .findAllCities());
 
     private static final Gson GSON = new GsonBuilder().create();
 
